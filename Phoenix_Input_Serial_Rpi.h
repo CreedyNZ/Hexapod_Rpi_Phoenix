@@ -275,25 +275,15 @@ void CommanderInputController::ControlInput(void)
     
     switch (command.cmdmode) {
     case '10':    
-      digitalWrite(21, HIGH);
-      digitalWrite(22, LOW);
-      digitalWrite(23, LOW);
       ControlMode = WALKMODE;
       break;
     case '20':    
-      digitalWrite(21, HIGH);
-      digitalWrite(22, LOW);
-      digitalWrite(23, LOW);
       ControlMode = ROTATEMODE;
       break;
     case '30':    
-      digitalWrite(21, HIGH);
-      digitalWrite(22, LOW);
-      digitalWrite(23, LOW);
       ControlMode = TRANSLATEMODE;
       break;
     default:
-      digitalWrite(21, HIGH);
       ControlMode = WALKMODE;
       break;
       }
