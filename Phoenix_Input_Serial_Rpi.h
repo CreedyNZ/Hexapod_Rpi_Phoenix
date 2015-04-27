@@ -88,7 +88,7 @@ enum {
 
 #define cTravelDeadZone 4      //The deadzone for the analog input from the remote
 
-#define ARBOTIX_TO  1000        // if we don't get a valid message in this number of mills turn off
+#define ARBOTIX_TO  2000        // if we don't get a valid message in this number of mills turn off
 
 
 //=============================================================================
@@ -272,16 +272,36 @@ void CommanderInputController::ControlInput(void)
     // [SWITCH MODES]
 
     // Choose modes...
-    
+    Serial.write(command.RightH);
     switch (command.cmdmode) {
-    case '1':    
+    case 0:    
       ControlMode = WALKMODE;
+      g_InControlState.BodyPos.x = 0;
+      g_InControlState.BodyPos.y = 0;
+      g_InControlState.BodyPos.z = 0;
+      g_InControlState.BodyRot1.x = 0;
+      g_InControlState.BodyRot1.y = 0;
+      g_InControlState.BodyRot1.z = 0;
+      g_InControlState.TravelLength.x = 0;
+      g_InControlState.TravelLength.z = 0;
+      g_InControlState.TravelLength.y = 0;
+      g_BodyYOffset = 35;
+      g_BodyYShift = 0;
+      g_InControlState.SelectedLeg = 255;
+      g_InControlState.fHexOn = 1;
+      digitalWrite(19, HIGH);
       break;
-    case '2':    
+    case 1:    
+      ControlMode = WALKMODE;
+      digitalWrite(19, HIGH);
+      break;
+    case 2:    
       ControlMode = ROTATEMODE;
+      digitalWrite(20, HIGH);
       break;
-    case '3':    
+    case 3:    
       ControlMode = TRANSLATEMODE;
+      digitalWrite(21, HIGH);
       break;
     default:
       MSound (1, 50, 500);
@@ -522,7 +542,6 @@ int Commander::ReadMsgs(){
     }
     else{
       vals[index] = int((char) Serial.read());
-      vals[index] = vals[index];
       checksum += (vals[index]);
       index++;
       digitalWrite(0, !digitalRead(0));
@@ -535,7 +554,7 @@ int Commander::ReadMsgs(){
         }
         else{
           digitalWrite(0, !digitalRead(0));
-          cmdmode = (signed char)( (int)vals[0] + 48 ); //  extra value to control command modes directly instead of scrolling through buttons
+          cmdmode = (signed char) ((int)vals[0]); //  extra value to control command modes directly instead of scrolling through buttons
           leftV = (signed char)( (int)vals[1]-128 );
           leftH = (signed char)( (int)vals[2]-128 );
           RightV = (signed char)( (int)vals[3]-128 );
